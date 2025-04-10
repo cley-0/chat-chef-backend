@@ -15,11 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 const __dirname = path.resolve();
 dotenv.config({ path: __dirname + "/.env" });
 
-// openai 정보 설정
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // 챗봇 api설정
 const initialMessage = (ingredientList) => {
   return [
@@ -40,6 +35,7 @@ const initialMessage = (ingredientList) => {
 app.post("/recipe", async (req, res) => {
   const { ingredientList } = req.body;
   const messages = initialMessage(ingredientList);
+  //openAI에게 답변 요청
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -69,7 +65,7 @@ app.post("/message", async function (req, res) {
       top_p: 1,
     });
     const data = response.choices[0].message;
-    console.log(data)
+    console.log(data);
     res.json({ data });
   } catch (error) {
     console.log(error);
