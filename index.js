@@ -3,10 +3,17 @@ import express from "express";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import path from "path";
+import serverless from "serverless-http";
 
 const app = express();
 
-app.use(cors());
+// 배포된 프론트엔드 도메인만 api요청 허용
+const corsOption = {
+  origin: "https://nyam-chef.netlify.app",
+  credential: true,
+};
+
+app.use(cors(corsOption));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -84,4 +91,7 @@ app.post("/message", async function (req, res) {
 
 console.log("서버 ON");
 
-app.listen("8080");
+// app.listen("8080");
+const handler = serverless(app);
+
+export { handler };
